@@ -1,0 +1,14 @@
+[
+    {
+        "error": "Timeout",
+        "url": "https://www.linkedin.com/company/sample1"
+    },
+    {
+        "error": "Timeout",
+        "url": "https://www.linkedin.com/company/sample2"
+    },
+    {
+        "error": "Timeout",
+        "url": "https://www.linkedin.com/company/sample3"
+    }
+]
