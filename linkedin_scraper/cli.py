@@ -12,7 +12,7 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    scraper = LinkedInScraper(use_selenium=True)  # Change to True for real scraping
+    scraper = LinkedInScraper(use_selenium=False)  # Change to True for real scraping
 
     try:
         print(f"Searching for companies matching: {args.keyword}")
