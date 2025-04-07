@@ -26,73 +26,142 @@ This repository contains a Python-based LinkedIn company scraper and a companion
   beautifulsoup4
   pandas
   selenium
-  ```
+linkedin_scraper/README.md
+(Optional) Additional documentation and usage notes.
 
-### 🧩 Chrome Extension
+🧩 Chrome Extension
+chrome_extension/manifest.json
+Extension metadata, permissions, and configuration.
 
-- `chrome_extension/manifest.json`  
-  Extension metadata, permissions, and configuration.
+chrome_extension/background.js
+Initializes local storage and handles install events.
 
-- `chrome_extension/background.js`  
-  Initializes local storage and handles install events.
+chrome_extension/content.js
+Extracts company data from LinkedIn pages when triggered.
 
-- `chrome_extension/content.js`  
-  Extracts company data from LinkedIn pages when triggered.
+chrome_extension/popup.html
+User interface for the popup.
 
-- `chrome_extension/popup.html`  
-  User interface for the popup.
+chrome_extension/popup.js
+Handles UI logic and actions (search, capture, export).
 
-- `chrome_extension/popup.js`  
-  Handles UI logic and actions (search, capture, export).
+chrome_extension/search-results.html & chrome_extension/search-results.js
+Display search results in a new tab.
 
-- `chrome_extension/search-results.html` & `search-results.js`  
-  Display search results in a new tab.
+chrome_extension/leads.html & chrome_extension/leads.js
+Manage captured leads: view, export, clear.
 
-- `chrome_extension/leads.html` & `leads.js`  
-  Manage captured leads: view, export, clear.
+chrome_extension/images/
+Stores icons referenced in manifest.json and popup.html.
 
-- `chrome_extension/images/`  
-  Stores icons referenced in `manifest.json` and `popup.html`.
+🚀 How to Use
+🔧 Python Scraper
+Navigate to the linkedin_scraper folder:
 
----
+bash
+Copy
+Edit
+cd linkedin_scraper
+Install dependencies:
 
-## 🚀 How to Use
+bash
+Copy
+Edit
+pip install -r requirements.txt
+Run the CLI tool (Mock Mode):
 
-### 🔧 Python Scraper
+bash
+Copy
+Edit
+python cli.py --keyword "YourKeyword" --limit 5 --output json
+Mock mode uses dummy data. Real scraping is disabled by default to comply with LinkedIn's Terms of Service.
 
-1. Navigate to the `linkedin_scraper` folder:
-   ```bash
-   cd linkedin_scraper
-   ```
+🌐 Switching to Real Mode (with Selenium)
+Note: Real scraping of LinkedIn violates their Terms of Service, so mock/demo mode is safer unless you're testing privately.
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+Step-by-Step to Switch to Real LinkedIn Scraping:
+Login to LinkedIn (Optional but Recommended):
+LinkedIn throttles unauthenticated users. Use cookies/session or login via Selenium.
 
-3. Run the CLI tool:
-   ```bash
-   python cli.py --keyword "YourKeyword" --limit 5 --output json
-   ```
+Use Selenium to Search Companies:
+Update the LinkedInScraper class’s search_companies method to:
 
-   Optional flags:
-   - `--location "YourLocation"` to narrow results
-   - `--output csv/json` to select output format
+Open LinkedIn’s search URL:
 
-### 🌐 Chrome Extension
+arduino
+Copy
+Edit
+https://www.linkedin.com/search/results/companies/?keywords=<your-query>
+Wait for the page to load and scroll for additional results.
 
-1. Open Google Chrome and go to:
-   ```
-   chrome://extensions/
-   ```
+Parse each company block to extract the company name and URL.
 
-2. Enable **Developer mode** (top-right).
+Example Scraping Logic in Selenium:
 
-3. Click **Load unpacked** and select the `chrome_extension` folder.
+python
+Copy
+Edit
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import time
 
-4. The extension will appear in your toolbar. Click it to:
-   - Search companies
-   - Capture profile data
-   - Export leads
+class LinkedInScraper:
+    def __init__(self, use_selenium=False):
+        self.use_selenium = use_selenium
+        if use_selenium:
+            options = Options()
+            options.add_argument("--start-maximized")
+            self.driver = webdriver.Chrome(options=options)
 
----
+    def search_companies(self, keyword, limit=3):
+        results = []
+        search_url = f"https://www.linkedin.com/search/results/companies/?keywords={keyword}"
+        self.driver.get(search_url)
+        time.sleep(3)  # wait for page to load
+
+        # Scroll to load more results
+        for _ in range(3):
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(2)
+
+        companies = self.driver.find_elements(By.CLASS_NAME, 'entity-result__title-text')[:limit]
+
+        for company in companies:
+            try:
+                name = company.text.strip()
+                link = company.find_element(By.TAG_NAME, 'a').get_attribute('href')
+                results.append({"name": name, "url": link})
+            except Exception as e:
+                print(f"Error parsing company: {e}")
+
+        return results
+In Your CLI (cli.py):
+Ensure that you instantiate the scraper with Selenium enabled:
+
+python
+Copy
+Edit
+scraper = LinkedInScraper(use_selenium=True)
+🌐 Chrome Extension
+Open Google Chrome and go to:
+
+arduino
+Copy
+Edit
+chrome://extensions/
+Enable Developer mode (top-right).
+
+Click Load unpacked and select the chrome_extension folder.
+
+The extension will appear in your toolbar. Click it to:
+
+Search companies
+
+Capture profile data
+
+Export leads
+
+⚠️ Disclaimer
+This project is intended for educational and personal portfolio use only.
+Scraping LinkedIn may violate their Terms of Service. Use responsibly and ethically.
