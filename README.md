@@ -28,11 +28,6 @@ This repository contains a Python-based LinkedIn company scraper and a companion
   selenium
   ```
 
-- `linkedin_scraper/README.md`  
-  (Optional) Additional documentation and usage notes.
-
----
-
 ### 🧩 Chrome Extension
 
 - `chrome_extension/manifest.json`  
@@ -83,8 +78,6 @@ This repository contains a Python-based LinkedIn company scraper and a companion
    Optional flags:
    - `--location "YourLocation"` to narrow results
    - `--output csv/json` to select output format
-
----
 
 ### 🌐 Chrome Extension
 
