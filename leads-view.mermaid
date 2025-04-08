@@ -1,0 +1,28 @@
+flowchart TB
+    A[LinkedIn Company Page] -->|Chrome Extension| B[Data Extraction]
+    B --> C{Lead Quality Score}
+    C -->|Score > 80| D[High Quality Leads]
+    C -->|60-80| E[Medium Quality Leads]
+    C -->|Score < 60| F[Low Quality Leads]
+    
+    D --> G[Lead Management]
+    E --> G
+    F --> G
+    
+    G -->|Export| H[CSV Download]
+    G -->|View| I[Web Dashboard]
+    G -->|Search| J[Filter & Sort]
+    
+    K[Search Companies] -->|Keywords| L[LinkedIn Search API]
+    L --> M[Search Results]
+    M -->|Select| A
+    
+    subgraph "Data Enrichment"
+    N[Company Profile]
+    O[Contact Information]
+    P[Social Media Profiles]
+    end
+    
+    B --> N
+    B --> O
+    B --> P
